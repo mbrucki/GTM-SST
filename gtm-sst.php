@@ -43,11 +43,28 @@ function gtm_custom_event_admin_init() {
 }
 add_action('admin_init', 'gtm_custom_event_admin_init');
 
+function gtm_custom_event_setting_server_address() {
+    $options = get_option('gtm_custom_event_options', array());
+    $value = isset($options['gtm_custom_event_server_address']) ? $options['gtm_custom_event_server_address'] : '';
+    echo "<input id='gtm_custom_event_server_address' name='gtm_custom_event_options[gtm_custom_event_server_address]' size='60' type='text' value='{$value}' required />";
+}
 
 function gtm_custom_event_setting_consent_cookie_name() {
-    $options = get_option('gtm_custom_event_options');
+    $options = get_option('gtm_custom_event_options', array());
     $value = isset($options['gtm_custom_event_consent_cookie_name']) ? $options['gtm_custom_event_consent_cookie_name'] : '';
     echo "<input id='gtm_custom_event_consent_cookie_name' name='gtm_custom_event_options[gtm_custom_event_consent_cookie_name]' size='60' type='text' value='{$value}' required />";
+}
+
+function gtm_custom_event_setting_string() {
+    $options = get_option('gtm_custom_event_options', array());
+    $value = isset($options['gtm_custom_event_server_preview']) ? $options['gtm_custom_event_server_preview'] : '';
+    echo "<input id='gtm_custom_event_server_preview' name='gtm_custom_event_options[gtm_custom_event_server_preview]' size='60' type='text' value='{$value}' placeholder='Leave empty if you do not want to debug' />";
+}
+
+function gtm_custom_event_setting_cookie_name() {
+    $options = get_option('gtm_custom_event_options', array());
+    $value = isset($options['gtm_custom_event_cookie_name']) ? $options['gtm_custom_event_cookie_name'] : '';
+    echo "<input id='gtm_custom_event_cookie_name' name='gtm_custom_event_options[gtm_custom_event_cookie_name]' size='60' type='text' value='{$value}' placeholder='Leave empty to omit user_id' />";
 }
 
 
@@ -62,8 +79,6 @@ function gtm_custom_event_options_validate($input) {
     return $input;
 }
 
-
-
 function gtm_custom_event_section_text() {
     echo '<p>This plugin sends all the page_view events from the backend of Wordpress. Hit me if you have any questions: analytics@mariuszbrucki.pl</p>';
     echo '<p><strong>GTM Server Address:</strong> This is the address of your GTM server container. In order to find it go to sGTM -> click on ID -> Default Url. Make sure to provide the complete URL, including the  exact path e.g. https://gtm-pw9ffd-y2riu.uc.r.appspot.com/endpoint.</p>';
@@ -73,22 +88,6 @@ function gtm_custom_event_section_text() {
     echo '<p><strong>*CID (_ga) Cookie:</strong> The plugin will automatically look for the "_ga" cookie to retrieve the Client ID (CID). If the cookie is not found, a random CID will be generated. </p>';
     echo '<p><strong>*User-Agent</strong> The plugin will automatically pass the information about the device of a user. Make sure you have a right user consent before sending this information to 3rd party tools! </p>';
     echo '<p><strong>*IP</strong> The plugin will automatically pass the IP of a device. Make sure you have a right user consent before sending this information to 3rd party tools! </p>';
-}
-
-
-function gtm_custom_event_setting_string() {
-    $options = get_option('gtm_custom_event_options');
-    echo "<input id='gtm_custom_event_server_preview' name='gtm_custom_event_options[gtm_custom_event_server_preview]' size='60' type='text' value='{$options['gtm_custom_event_server_preview']}' placeholder='Leave empty if you do not want to debug' />";
-}
-
-function gtm_custom_event_setting_server_address() {
-    $options = get_option('gtm_custom_event_options');
-    echo "<input id='gtm_custom_event_server_address' name='gtm_custom_event_options[gtm_custom_event_server_address]' size='60' type='text' value='{$options['gtm_custom_event_server_address']}' required />";
-}
-
-function gtm_custom_event_setting_cookie_name() {
-    $options = get_option('gtm_custom_event_options');
-    echo "<input id='gtm_custom_event_cookie_name' name='gtm_custom_event_options[gtm_custom_event_cookie_name]' size='60' type='text' value='{$options['gtm_custom_event_cookie_name']}' placeholder='Leave empty to omit user_id' />";
 }
 
 // Function to send the event from the backend
@@ -110,13 +109,12 @@ function send_gtm_custom_event($title = '', $url = '', $referrer = '') {
     }
     
     if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-    $ip_address = $_SERVER['HTTP_X_FORWARDED_FOR'];
+        $ip_address = $_SERVER['HTTP_X_FORWARDED_FOR'];
     } else {
-    $ip_address = $_SERVER['REMOTE_ADDR'];
+        $ip_address = $_SERVER['REMOTE_ADDR'];
     }
     
     $user_agent = $_SERVER['HTTP_USER_AGENT'] ?? '';
-
 
     $event_params = array(
         'name' => 'page_view',
@@ -145,7 +143,7 @@ function send_gtm_custom_event($title = '', $url = '', $referrer = '') {
     // Determine if X-Gtm-Server-Preview header should be added
     $headers = array(
         'Content-Type' => 'application/json; charset=utf-8'
-        );
+    );
     if (!empty($options['gtm_custom_event_server_preview'])) {
         $headers['X-Gtm-Server-Preview'] = $options['gtm_custom_event_server_preview'];
     }
@@ -163,7 +161,6 @@ function send_gtm_custom_event($title = '', $url = '', $referrer = '') {
     }
 }
 
-
 function no_cache_headers() {
     header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
     header("Cache-Control: post-check=0, pre-check=0", false);
@@ -179,8 +176,7 @@ function enqueue_dom_ready_script() {
             xhr.open("POST", "' . admin_url('admin-ajax.php') . '", true);
             xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
             xhr.send("action=send_gtm_event_on_dom_ready&title=" + encodeURIComponent(document.title) + "&url=" + encodeURIComponent(window.location.href) + "&referrer=" + encodeURIComponent(document.referrer));
-});
-
+        });
     </script>';
 }
 
@@ -198,5 +194,4 @@ function send_gtm_event_on_dom_ready() {
 
 add_action('wp_ajax_send_gtm_event_on_dom_ready', 'send_gtm_event_on_dom_ready');
 add_action('wp_ajax_nopriv_send_gtm_event_on_dom_ready', 'send_gtm_event_on_dom_ready');
-
 ?>
