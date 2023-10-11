@@ -3,7 +3,7 @@
 Plugin Name: GTM SST
 Description: Sends page_view events to a specified sGTM container and allows for debugging.
 Version: 1.0
-Author: Mariusz Brucki
+Author: <a href="https://mariuszbrucki.pl">Mariusz Brucki</a>
 */
 
 // Function to add the settings page to the admin menu
