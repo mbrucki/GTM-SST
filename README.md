@@ -51,3 +51,6 @@ For further assistance, please contact: [analytics@mariuszbrucki.pl](mailto:anal
 ## License
 
 This plugin is licensed under the terms of the [GNU Affero General Public License v3.0](https://www.gnu.org/licenses/agpl-3.0.html).
+
+____
+If you're interested in collaborating on cutting-edge projects, or if you require professional analytics expertise, please [visit my website](https://mariuszbrucki.pl) to learn more and get in touch.
