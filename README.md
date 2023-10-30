@@ -46,11 +46,10 @@ If events are not being sent to your sGTM container, ensure that:
 - The user consent cookie name is correctly set, and the cookie is present on the user's browser.
 - The sGTM container is correctly set up to receive and process the `page_view` events.
 
-For further assistance, please contact: [analytics@mariuszbrucki.pl](mailto:analytics@mariuszbrucki.pl)
 
 ## License
 
 This plugin is licensed under the terms of the [GNU Affero General Public License v3.0](https://www.gnu.org/licenses/agpl-3.0.html).
 
 ____
-If you're interested in collaborating, please [visit my website](https://mariuszbrucki.pl) to learn more and get in touch.
+If you need support in implementing server side tracking, please [visit my website](https://mariuszbrucki.pl) to get in touch or email me at [analytics@mariuszbrucki.pl](mailto:analytics@mariuszbrucki.pl)
